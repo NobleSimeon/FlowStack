@@ -9,67 +9,66 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Layers className="h-4 w-4 text-primary-foreground" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-foreground">
+            <Layers className="h-3.5 w-3.5 text-background" />
           </div>
-          <span className="font-serif text-xl font-bold tracking-tight text-foreground">
+          <span className="font-serif text-lg font-bold tracking-tight text-foreground">
             FlowStack
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden items-center gap-8 md:flex">
-          <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="#how-it-works" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
             How It Works
           </Link>
-          <Link href="#trending" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Trending Tools
+          <Link href="#trending" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
+            Trending
           </Link>
-          <Link href="#roles" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="#roles" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
             By Role
           </Link>
         </div>
 
-        {/* Desktop CTA */}
-        <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/auth/login">Sign In</Link>
+        <div className="hidden items-center gap-2 md:flex">
+          <Button variant="ghost" size="sm" className="h-8 text-[13px]" asChild>
+            <Link href="/auth/login">Sign in</Link>
           </Button>
-          <Button size="sm" asChild>
+          <Button size="sm" className="h-8 text-[13px]" asChild>
             <Link href="/auth/sign-up">Get Started</Link>
           </Button>
         </div>
 
-        {/* Mobile menu toggle */}
         <button
           className="md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
-          {mobileOpen ? <X className="h-5 w-5 text-foreground" /> : <Menu className="h-5 w-5 text-foreground" />}
+          {mobileOpen ? (
+            <X className="h-5 w-5 text-foreground" />
+          ) : (
+            <Menu className="h-5 w-5 text-foreground" />
+          )}
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="animate-in fade-in slide-in-from-top-2 border-t border-border bg-card md:hidden">
-          <div className="flex flex-col gap-4 px-6 py-6">
-            <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
+        <div className="border-t border-border/60 bg-background md:hidden animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="flex flex-col gap-1 px-6 py-4">
+            <Link href="#how-it-works" className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary" onClick={() => setMobileOpen(false)}>
               How It Works
             </Link>
-            <Link href="#trending" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              Trending Tools
+            <Link href="#trending" className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary" onClick={() => setMobileOpen(false)}>
+              Trending
             </Link>
-            <Link href="#roles" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
+            <Link href="#roles" className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary" onClick={() => setMobileOpen(false)}>
               By Role
             </Link>
-            <div className="flex flex-col gap-2 pt-2">
+            <div className="mt-3 flex flex-col gap-2 border-t border-border/60 pt-3">
               <Button variant="outline" size="sm" asChild>
-                <Link href="/auth/login">Sign In</Link>
+                <Link href="/auth/login">Sign in</Link>
               </Button>
               <Button size="sm" asChild>
                 <Link href="/auth/sign-up">Get Started</Link>

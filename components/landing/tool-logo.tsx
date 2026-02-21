@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 
 interface ToolLogoProps {
   name: string
@@ -16,8 +15,8 @@ export function ToolLogo({ name, logoUrl, size = 40, className = "" }: ToolLogoP
   if (hasError || !logoUrl) {
     return (
       <div
-        className={`flex shrink-0 items-center justify-center rounded-lg bg-primary/10 font-serif font-bold text-primary ${className}`}
-        style={{ width: size, height: size, fontSize: size * 0.4 }}
+        className={`flex shrink-0 items-center justify-center rounded-xl bg-secondary font-semibold text-foreground ${className}`}
+        style={{ width: size, height: size, fontSize: size * 0.38 }}
       >
         {name.charAt(0)}
       </div>
@@ -25,14 +24,21 @@ export function ToolLogo({ name, logoUrl, size = 40, className = "" }: ToolLogoP
   }
 
   return (
-    <Image
-      src={logoUrl}
-      alt={`${name} logo`}
-      width={size}
-      height={size}
-      className={`shrink-0 rounded-lg bg-secondary object-contain ${className}`}
-      style={{ width: size, height: size, padding: size * 0.15 }}
-      onError={() => setHasError(true)}
-    />
+    <div
+      className={`flex shrink-0 items-center justify-center rounded-xl bg-secondary ${className}`}
+      style={{ width: size, height: size }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={logoUrl}
+        alt={`${name} logo`}
+        width={size * 0.6}
+        height={size * 0.6}
+        className="object-contain"
+        style={{ width: size * 0.6, height: size * 0.6 }}
+        onError={() => setHasError(true)}
+        crossOrigin="anonymous"
+      />
+    </div>
   )
 }

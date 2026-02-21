@@ -17,7 +17,7 @@ import {
   Check,
   Loader2,
 } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+/* CSS transitions replace framer-motion */
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -127,15 +127,10 @@ export function OnboardingWizard({
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
+      <div>
         {step === 1 && (
-          <motion.div
-            key="step-1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+
             {/* Step 1: Role selection */}
             <div className="text-center">
               <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
@@ -203,17 +198,12 @@ export function OnboardingWizard({
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {step === 2 && (
-          <motion.div
-            key="step-2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+
             {/* Step 2: Task selection */}
             <div className="text-center">
               <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
@@ -299,9 +289,9 @@ export function OnboardingWizard({
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   )
 }
