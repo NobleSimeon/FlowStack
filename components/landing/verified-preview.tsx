@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Star,
-  Quote,
-  HelpCircle,
-} from "lucide-react"
+import { BadgeCheck, Star, Quote, HelpCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Tooltip,
@@ -13,12 +8,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { motion } from "framer-motion"
+import { ToolLogo } from "@/components/landing/tool-logo"
 
 interface VerifiedTool {
   id: string
   name: string
   tagline: string
+  logo_url: string
   pricing_model: string
   average_rating: number
   review_count: number
@@ -35,12 +31,7 @@ export function VerifiedPreview({ tool }: { tool: VerifiedTool | null }) {
         <div className="mx-auto max-w-4xl">
           <div className="grid items-center gap-12 md:grid-cols-2">
             {/* Left: text */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
+            <div>
               <Badge
                 variant="outline"
                 className="mb-4 gap-1.5 border-accent/30 text-accent"
@@ -77,22 +68,18 @@ export function VerifiedPreview({ tool }: { tool: VerifiedTool | null }) {
                   </Tooltip>
                 </div>
               </TooltipProvider>
-            </motion.div>
+            </div>
 
             {/* Right: card preview */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="rounded-xl border border-border bg-card p-6 shadow-sm"
-            >
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               {/* Card header */}
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 font-serif text-xl font-bold text-primary">
-                    {tool.name.charAt(0)}
-                  </div>
+                  <ToolLogo
+                    name={tool.name}
+                    logoUrl={tool.logo_url}
+                    size={48}
+                  />
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h3 className="font-serif text-lg font-bold text-foreground">
@@ -149,7 +136,7 @@ export function VerifiedPreview({ tool }: { tool: VerifiedTool | null }) {
                   from {tool.review_count} reviews
                 </span>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>

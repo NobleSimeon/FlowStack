@@ -11,10 +11,10 @@ import { Footer } from "@/components/landing/footer"
 export default async function LandingPage() {
   const supabase = await createClient()
 
-  // Fetch trending tools with category names
+  // Fetch trending tools with category names and logos
   const { data: trendingTools } = await supabase
     .from("tools")
-    .select("id, name, slug, tagline, description, website_url, pricing_model, is_verified, trending_reason, average_rating, review_count, categories(name)")
+    .select("id, name, slug, tagline, description, website_url, logo_url, pricing_model, is_verified, trending_reason, average_rating, review_count, categories(name)")
     .eq("is_trending", true)
     .order("featured_at", { ascending: false })
     .limit(6)
@@ -22,7 +22,7 @@ export default async function LandingPage() {
   // Fetch a verified tool for the preview section
   const { data: verifiedTools } = await supabase
     .from("tools")
-    .select("id, name, tagline, pricing_model, average_rating, review_count, why_professionals_use, categories(name)")
+    .select("id, name, tagline, logo_url, pricing_model, average_rating, review_count, why_professionals_use, categories(name)")
     .eq("is_verified", true)
     .order("average_rating", { ascending: false })
     .limit(1)
@@ -37,6 +37,58 @@ export default async function LandingPage() {
   const { data: toolRoleCounts } = await supabase
     .from("tool_roles")
     .select("role_id")
+
+  // Fetch role stacks for the hero section preview (top 5 tools per role, sorted by rating)
+  const mainRoleSlugs = ["developer", "designer", "product-manager", "marketer", "writer", "data-analyst"]
+  const { data: roleStacksRaw } = await supabase
+    .from("tool_roles")
+    .select("roles(slug, name), tools(name, slug, tagline, logo_url, average_rating, pricing_model)")
+
+  // Build role stacks grouped by role
+  type RoleStackMap = Record<string, {
+    role_slug: string
+    role_name: string
+    tools: Array<{
+      name: string
+      slug: string
+      tagline: string
+      logo_url: string
+      average_rating: number
+      pricing_model: string
+    }>
+  }>
+
+  const roleStackMap: RoleStackMap = {}
+  if (roleStacksRaw) {
+    for (const entry of roleStacksRaw) {
+      const role = entry.roles as unknown as { slug: string; name: string }
+      const tool = entry.tools as unknown as {
+        name: string
+        slug: string
+        tagline: string
+        logo_url: string
+        average_rating: number
+        pricing_model: string
+      }
+      if (!role || !tool) continue
+      if (!mainRoleSlugs.includes(role.slug)) continue
+
+      if (!roleStackMap[role.slug]) {
+        roleStackMap[role.slug] = {
+          role_slug: role.slug,
+          role_name: role.name,
+          tools: [],
+        }
+      }
+      roleStackMap[role.slug].tools.push(tool)
+    }
+  }
+
+  // Sort tools by rating descending within each role
+  const roleStacks = Object.values(roleStackMap).map((rs) => ({
+    ...rs,
+    tools: rs.tools.sort((a, b) => Number(b.average_rating) - Number(a.average_rating)),
+  }))
 
   // Calculate counts
   const roleCounts: Record<string, number> = {}
@@ -69,7 +121,7 @@ export default async function LandingPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <Hero />
+      <Hero roleStacks={roleStacks} />
       <ValueProps />
       <TrendingTools tools={formattedTrending} />
       <VerifiedPreview tool={formattedVerified} />

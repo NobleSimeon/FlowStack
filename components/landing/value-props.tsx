@@ -1,7 +1,6 @@
 "use client"
 
 import { Users, Workflow, ShieldCheck, HelpCircle } from "lucide-react"
-import { motion } from "framer-motion"
 import {
   Tooltip,
   TooltipContent,
@@ -33,23 +32,10 @@ const props = [
   },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
-
 export function ValueProps() {
   return (
     <section id="how-it-works" className="bg-card px-6 py-20 md:py-28">
       <div className="mx-auto max-w-7xl">
-        {/* Section header */}
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
             Why FlowStack
@@ -63,32 +49,20 @@ export function ValueProps() {
           </p>
         </div>
 
-        {/* Cards */}
         <TooltipProvider>
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3"
-          >
-            {props.map((prop) => (
-              <motion.div
+          <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+            {props.map((prop, i) => (
+              <div
                 key={prop.title}
-                variants={itemVariants}
-                className="group relative rounded-xl border border-border bg-background p-8 transition-all hover:border-primary/20 hover:shadow-sm"
+                className="group relative rounded-xl border border-border bg-background p-8 transition-all hover:border-primary/20 hover:shadow-sm animate-in fade-in slide-in-from-bottom-4"
+                style={{ animationDelay: `${i * 150}ms`, animationFillMode: "both" }}
               >
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10">
                   <prop.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="mb-2 font-serif text-xl font-bold text-foreground">
-                  {prop.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {prop.description}
-                </p>
+                <h3 className="mb-2 font-serif text-xl font-bold text-foreground">{prop.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{prop.description}</p>
 
-                {/* Contextual help */}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
@@ -98,16 +72,13 @@ export function ValueProps() {
                       <HelpCircle className="h-4 w-4" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="max-w-xs text-sm leading-relaxed"
-                  >
+                  <TooltipContent side="top" className="max-w-xs text-sm leading-relaxed">
                     {prop.help}
                   </TooltipContent>
                 </Tooltip>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </TooltipProvider>
       </div>
     </section>

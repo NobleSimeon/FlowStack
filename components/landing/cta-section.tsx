@@ -1,20 +1,11 @@
-"use client"
-
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
 
 export function CTASection() {
   return (
     <section className="bg-card px-6 py-20 md:py-28">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="mx-auto max-w-3xl text-center"
-      >
+      <div className="mx-auto max-w-3xl text-center">
         <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground text-balance md:text-4xl">
           Your workflow deserves better than trial and error
         </h2>
@@ -33,7 +24,7 @@ export function CTASection() {
             Free to use. No credit card required.
           </p>
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }

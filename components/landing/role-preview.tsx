@@ -19,7 +19,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { motion } from "framer-motion"
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -40,14 +39,13 @@ interface Role {
   tool_count: number
 }
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+const roleHelp: Record<string, string> = {
+  developer: "Includes tools for code generation, debugging, testing, documentation, and deployment.",
+  designer: "Includes tools for visual design, prototyping, asset generation, and design systems.",
+  "product-manager": "Includes tools for project coordination, roadmapping, user research, and documentation.",
+  marketer: "Includes tools for content creation, SEO, analytics, and social media management.",
+  writer: "Includes tools for writing, editing, research, content creation, and SEO.",
+  "data-analyst": "Includes tools for data analysis, visualization, reporting, and research.",
 }
 
 export function RolePreview({ roles }: { roles: Role[] }) {
@@ -70,37 +68,25 @@ export function RolePreview({ roles }: { roles: Role[] }) {
 
         {/* Roles grid */}
         <TooltipProvider>
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
+          <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {roles
               .filter((r) => r.slug !== "other")
-              .map((role) => {
+              .map((role, i) => {
                 const Icon = iconMap[role.icon] || Sparkles
                 return (
-                  <motion.div
+                  <div
                     key={role.id}
-                    variants={itemVariants}
-                    className="group relative flex items-start gap-4 rounded-xl border border-border bg-background p-5 transition-all hover:border-primary/20 hover:shadow-sm"
+                    className="group relative flex items-start gap-4 rounded-xl border border-border bg-background p-5 transition-all hover:border-primary/20 hover:shadow-sm animate-in fade-in slide-in-from-bottom-3"
+                    style={{ animationDelay: `${i * 80}ms`, animationFillMode: "both" }}
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/15">
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-serif text-base font-bold text-foreground">
-                        {role.name}
-                      </h3>
-                      <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
-                        {role.description}
-                      </p>
+                      <h3 className="font-serif text-base font-bold text-foreground">{role.name}</h3>
+                      <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{role.description}</p>
                       {role.tool_count > 0 && (
-                        <p className="mt-2 text-xs font-medium text-primary">
-                          {role.tool_count} tools curated
-                        </p>
+                        <p className="mt-2 text-xs font-medium text-primary">{role.tool_count} tools curated</p>
                       )}
                     </div>
 
@@ -113,35 +99,22 @@ export function RolePreview({ roles }: { roles: Role[] }) {
                           <HelpCircle className="h-3.5 w-3.5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        className="max-w-xs text-sm leading-relaxed"
-                      >
-                        {role.slug === "developer"
-                          ? "Includes tools for code generation, debugging, testing, documentation, and deployment."
-                          : role.slug === "designer"
-                            ? "Includes tools for visual design, prototyping, asset generation, and design systems."
-                            : role.slug === "product-manager"
-                              ? "Includes tools for project coordination, roadmapping, user research, and documentation."
-                              : role.slug === "marketer"
-                                ? "Includes tools for content creation, SEO, analytics, and social media management."
-                                : role.slug === "writer"
-                                  ? "Includes tools for writing, editing, research, content creation, and SEO."
-                                  : "Includes tools for data analysis, visualization, reporting, and research."}
+                      <TooltipContent side="top" className="max-w-xs text-sm leading-relaxed">
+                        {roleHelp[role.slug] || "Includes tools relevant to this role."}
                       </TooltipContent>
                     </Tooltip>
-                  </motion.div>
+                  </div>
                 )
               })}
 
             {/* "Other" role card */}
             {roles
               .filter((r) => r.slug === "other")
-              .map((role) => (
-                <motion.div
+              .map((role, i) => (
+                <div
                   key={role.id}
-                  variants={itemVariants}
-                  className="group relative flex items-start gap-4 rounded-xl border border-dashed border-border bg-background p-5 transition-all hover:border-primary/20 sm:col-span-2 lg:col-span-3"
+                  className="group relative flex items-start gap-4 rounded-xl border border-dashed border-border bg-background p-5 transition-all hover:border-primary/20 sm:col-span-2 lg:col-span-3 animate-in fade-in slide-in-from-bottom-3"
+                  style={{ animationDelay: `${(roles.length - 1) * 80}ms`, animationFillMode: "both" }}
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10">
                     <Sparkles className="h-5 w-5 text-accent" />
@@ -152,8 +125,7 @@ export function RolePreview({ roles }: { roles: Role[] }) {
                     </h3>
                     <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
                       Tell us what you do and pick your key tasks. We will match
-                      you with the right tools based on how you actually work —
-                      not a label.
+                      you with the right tools based on how you actually work — not a label.
                     </p>
                   </div>
 
@@ -166,18 +138,15 @@ export function RolePreview({ roles }: { roles: Role[] }) {
                         <HelpCircle className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="max-w-xs text-sm leading-relaxed"
-                    >
+                    <TooltipContent side="top" className="max-w-xs text-sm leading-relaxed">
                       Select &quot;Other&quot; during onboarding to type your
                       own role and pick tasks that match your daily work. We
                       route you to relevant tools based on tasks, not titles.
                     </TooltipContent>
                   </Tooltip>
-                </motion.div>
+                </div>
               ))}
-          </motion.div>
+          </div>
         </TooltipProvider>
 
         {/* CTA */}

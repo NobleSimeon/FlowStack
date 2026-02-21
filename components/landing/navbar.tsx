@@ -4,7 +4,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { Layers, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -24,22 +23,13 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-8 md:flex">
-          <Link
-            href="#how-it-works"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             How It Works
           </Link>
-          <Link
-            href="#trending"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link href="#trending" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             Trending Tools
           </Link>
-          <Link
-            href="#roles"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link href="#roles" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             By Role
           </Link>
         </div>
@@ -50,7 +40,7 @@ export function Navbar() {
             <Link href="/auth/login">Sign In</Link>
           </Button>
           <Button size="sm" asChild>
-            <Link href="/auth/sign-up">Find My AI Stack</Link>
+            <Link href="/auth/sign-up">Get Started</Link>
           </Button>
         </div>
 
@@ -60,57 +50,34 @@ export function Navbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
-          {mobileOpen ? (
-            <X className="h-5 w-5 text-foreground" />
-          ) : (
-            <Menu className="h-5 w-5 text-foreground" />
-          )}
+          {mobileOpen ? <X className="h-5 w-5 text-foreground" /> : <Menu className="h-5 w-5 text-foreground" />}
         </button>
       </nav>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border bg-card md:hidden"
-          >
-            <div className="flex flex-col gap-4 px-6 py-6">
-              <Link
-                href="#how-it-works"
-                className="text-sm font-medium text-muted-foreground"
-                onClick={() => setMobileOpen(false)}
-              >
-                How It Works
-              </Link>
-              <Link
-                href="#trending"
-                className="text-sm font-medium text-muted-foreground"
-                onClick={() => setMobileOpen(false)}
-              >
-                Trending Tools
-              </Link>
-              <Link
-                href="#roles"
-                className="text-sm font-medium text-muted-foreground"
-                onClick={() => setMobileOpen(false)}
-              >
-                By Role
-              </Link>
-              <div className="flex flex-col gap-2 pt-2">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/auth/login">Sign In</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/auth/sign-up">Find My AI Stack</Link>
-                </Button>
-              </div>
+      {mobileOpen && (
+        <div className="animate-in fade-in slide-in-from-top-2 border-t border-border bg-card md:hidden">
+          <div className="flex flex-col gap-4 px-6 py-6">
+            <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
+              How It Works
+            </Link>
+            <Link href="#trending" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
+              Trending Tools
+            </Link>
+            <Link href="#roles" className="text-sm font-medium text-muted-foreground" onClick={() => setMobileOpen(false)}>
+              By Role
+            </Link>
+            <div className="flex flex-col gap-2 pt-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/auth/login">Sign In</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/auth/sign-up">Get Started</Link>
+              </Button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
