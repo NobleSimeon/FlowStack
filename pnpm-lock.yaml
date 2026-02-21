@@ -93,10 +93,10 @@ importers:
         specifier: 1.2.8
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@supabase/ssr':
-        specifier: 0.6.1
+        specifier: ^0.6.1
         version: 0.6.1(@supabase/supabase-js@2.49.4)
       '@supabase/supabase-js':
-        specifier: 2.49.4
+        specifier: ^2.49.4
         version: 2.49.4
       '@vercel/analytics':
         specifier: 1.6.1
@@ -105,7 +105,7 @@ importers:
         specifier: ^10.4.20
         version: 10.4.24(postcss@8.5.6)
       bcryptjs:
-        specifier: 2.4.3
+        specifier: ^2.4.3
         version: 2.4.3
       class-variance-authority:
         specifier: ^0.7.1
@@ -123,7 +123,7 @@ importers:
         specifier: 8.6.0
         version: 8.6.0(react@19.2.4)
       framer-motion:
-        specifier: 11.18.0
+        specifier: ^11.18.0
         version: 11.18.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       input-otp:
         specifier: 1.4.2
@@ -159,7 +159,7 @@ importers:
         specifier: ^1.7.1
         version: 1.7.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       swr:
-        specifier: 2.3.3
+        specifier: ^2.3.3
         version: 2.3.3(react@19.2.4)
       tailwind-merge:
         specifier: ^3.3.1
