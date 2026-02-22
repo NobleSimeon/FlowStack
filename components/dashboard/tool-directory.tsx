@@ -20,6 +20,7 @@ interface Tool {
   tagline: string
   description: string
   website_url: string
+  logo_url: string | null
   pricing_model: string
   is_verified: boolean
   is_trending: boolean
@@ -261,8 +262,12 @@ export function ToolDirectory({ tools, categories, bookmarkedToolIds }: ToolDire
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center text-lg font-serif font-bold text-primary shrink-0">
-                      {tool.name.charAt(0)}
+                    <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+                      {tool.logo_url ? (
+                        <img src={tool.logo_url} alt={tool.name} className="h-6 w-6 object-contain" loading="lazy" />
+                      ) : (
+                        <span className="text-lg font-serif font-bold text-primary">{tool.name.charAt(0)}</span>
+                      )}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">

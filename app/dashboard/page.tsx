@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   const { data: tools } = await supabase
     .from("tools")
     .select(
-      "id, name, slug, tagline, description, website_url, pricing_model, is_verified, is_trending, average_rating, review_count, why_professionals_use, categories(id, name, slug)"
+      "id, name, slug, tagline, description, website_url, logo_url, pricing_model, is_verified, is_trending, average_rating, review_count, why_professionals_use, categories(id, name, slug)"
     )
     .order("is_trending", { ascending: false })
     .order("average_rating", { ascending: false })

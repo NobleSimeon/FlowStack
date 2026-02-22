@@ -84,8 +84,12 @@ export function ToolDetail({ tool, reviews: initialReviews, relatedTools }: Tool
 
       {/* Tool header */}
       <div className="flex flex-col md:flex-row items-start gap-6 mb-8">
-        <div className="h-16 w-16 rounded-2xl bg-secondary flex items-center justify-center text-2xl font-serif font-bold text-primary shrink-0">
-          {tool.name.charAt(0)}
+        <div className="h-16 w-16 rounded-2xl bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+          {tool.logo_url ? (
+            <img src={tool.logo_url} alt={tool.name} className="h-10 w-10 object-contain" loading="lazy" />
+          ) : (
+            <span className="text-2xl font-serif font-bold text-primary">{tool.name.charAt(0)}</span>
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -324,8 +328,12 @@ export function ToolDetail({ tool, reviews: initialReviews, relatedTools }: Tool
               <CardContent className="flex flex-col gap-3">
                 {relatedTools.map((rt: any) => (
                   <Link key={rt.id} href={`/dashboard/tools/${rt.slug}`} className="flex items-center gap-3 group">
-                    <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center text-sm font-serif font-bold text-primary shrink-0">
-                      {rt.name.charAt(0)}
+                    <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+                      {rt.logo_url ? (
+                        <img src={rt.logo_url} alt={rt.name} className="h-5 w-5 object-contain" loading="lazy" />
+                      ) : (
+                        <span className="text-sm font-serif font-bold text-primary">{rt.name.charAt(0)}</span>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
