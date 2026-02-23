@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   Code,
@@ -12,12 +13,13 @@ import {
   PenTool,
   BarChart3,
   Sparkles,
+  Compass,
+  Rocket,
   ArrowRight,
   ArrowLeft,
   Check,
   Loader2,
 } from "lucide-react"
-/* CSS transitions replace framer-motion */
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -27,6 +29,8 @@ const iconMap: Record<string, React.ElementType> = {
   PenTool,
   BarChart3,
   Sparkles,
+  Compass,
+  Rocket,
 }
 
 interface Role {
@@ -44,16 +48,23 @@ interface Task {
   description: string
 }
 
+interface RoleTask {
+  role_id: string
+  task_id: string
+}
+
 interface OnboardingWizardProps {
   userId: string
   roles: Role[]
   tasks: Task[]
+  roleTasks: RoleTask[]
 }
 
 export function OnboardingWizard({
   userId,
   roles,
   tasks,
+  roleTasks,
 }: OnboardingWizardProps) {
   const [step, setStep] = useState(1)
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
@@ -64,12 +75,28 @@ export function OnboardingWizard({
 
   const totalSteps = 2
 
+  // Filter tasks dynamically based on selected role
+  const filteredTasks = useMemo(() => {
+    if (!selectedRole) return tasks
+    const taskIdsForRole = roleTasks
+      .filter((rt) => rt.role_id === selectedRole)
+      .map((rt) => rt.task_id)
+    const matched = tasks.filter((t) => taskIdsForRole.includes(t.id))
+    return matched.length > 0 ? matched : tasks
+  }, [selectedRole, tasks, roleTasks])
+
   const toggleTask = (taskId: string) => {
     setSelectedTasks((prev) =>
       prev.includes(taskId)
         ? prev.filter((t) => t !== taskId)
-        : [...prev, taskId]
+        : [...prev, taskId],
     )
+  }
+
+  const handleRoleSelect = (roleId: string) => {
+    setSelectedRole(roleId)
+    // Reset tasks when role changes
+    setSelectedTasks([])
   }
 
   const handleSubmit = async () => {
@@ -80,7 +107,6 @@ export function OnboardingWizard({
     try {
       const supabase = createClient()
 
-      // Update profile with role
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
@@ -92,7 +118,6 @@ export function OnboardingWizard({
 
       if (profileError) throw profileError
 
-      // Insert selected tasks
       if (selectedTasks.length > 0) {
         const taskRows = selectedTasks.map((taskId) => ({
           user_id: userId,
@@ -113,84 +138,98 @@ export function OnboardingWizard({
     }
   }
 
+  const selectedRoleName = roles.find((r) => r.id === selectedRole)?.name
+
   return (
     <div className="w-full max-w-2xl">
-      {/* Progress indicator */}
-      <div className="mb-8 flex items-center justify-center gap-2">
-        {[1, 2].map((s) => (
-          <div
-            key={s}
-            className={`h-1.5 w-12 rounded-full transition-colors ${
-              s <= step ? "bg-primary" : "bg-border"
-            }`}
-          />
-        ))}
+      {/* Logo and progress */}
+      <div className="mb-10 flex flex-col items-center gap-4">
+        <Image
+          src="/images/logo.png"
+          alt="FlowStack"
+          width={48}
+          height={48}
+          className="rounded-xl"
+        />
+        <div className="flex items-center gap-2">
+          {[1, 2].map((s) => (
+            <div
+              key={s}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                s <= step ? "w-14 bg-primary" : "w-8 bg-border"
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       <div>
         {step === 1 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-
             {/* Step 1: Role selection */}
             <div className="text-center">
-              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary">
                 Step 1 of {totalSteps}
               </p>
-              <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground">
-                What best describes your role?
+              <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground md:text-4xl text-balance">
+                Tell us your role to personalize your stack
               </h1>
-              <p className="mt-2 text-muted-foreground">
-                {"We'll personalize your tool recommendations based on this."}
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                {"We'll curate AI tool recommendations tailored to your workflow."}
               </p>
             </div>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="mt-10 grid gap-3 sm:grid-cols-2">
               {roles.map((role) => {
                 const Icon = iconMap[role.icon] || Sparkles
                 const isSelected = selectedRole === role.id
                 return (
                   <button
                     key={role.id}
-                    onClick={() => setSelectedRole(role.id)}
-                    className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-all ${
+                    onClick={() => handleRoleSelect(role.id)}
+                    className={`group relative flex items-start gap-3.5 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
                       isSelected
-                        ? "border-primary bg-primary/5 ring-1 ring-primary"
-                        : "border-border bg-card hover:border-primary/30"
+                        ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
+                        : "border-border bg-card hover:border-primary/40 hover:bg-card/80"
                     }`}
                   >
                     <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                        isSelected ? "bg-primary/15" : "bg-muted"
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
                       }`}
                     >
-                      <Icon
-                        className={`h-5 w-5 ${
-                          isSelected
-                            ? "text-primary"
-                            : "text-muted-foreground"
-                        }`}
-                      />
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-serif font-bold text-foreground">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-sans text-sm font-semibold text-foreground">
                         {role.name}
                       </p>
-                      <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                         {role.description}
                       </p>
                     </div>
-                    {isSelected && (
-                      <Check className="ml-auto h-5 w-5 shrink-0 text-primary" />
-                    )}
+                    <div
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                        isSelected
+                          ? "border-primary bg-primary"
+                          : "border-border"
+                      }`}
+                    >
+                      {isSelected && (
+                        <Check className="h-3 w-3 text-primary-foreground" />
+                      )}
+                    </div>
                   </button>
                 )
               })}
             </div>
 
-            <div className="mt-8 flex justify-end">
+            <div className="mt-10 flex justify-end">
               <Button
                 size="lg"
-                className="gap-2"
+                className="gap-2 rounded-xl px-8"
                 disabled={!selectedRole}
                 onClick={() => setStep(2)}
               >
@@ -203,58 +242,60 @@ export function OnboardingWizard({
 
         {step === 2 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-
             {/* Step 2: Task selection */}
             <div className="text-center">
-              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary">
                 Step 2 of {totalSteps}
               </p>
-              <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground">
+              <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground md:text-4xl text-balance">
                 What tasks matter most to you?
               </h1>
-              <p className="mt-2 text-muted-foreground">
-                Select the tasks you do regularly. This helps us show the most
-                relevant tools.
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                {selectedRoleName
+                  ? `Showing tasks relevant to ${selectedRoleName}s. Select the ones you do regularly.`
+                  : "Select the tasks you do regularly to see the most relevant tools."}
               </p>
             </div>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-2">
-              {tasks.map((task) => {
+            <div className="mt-10 flex flex-wrap justify-center gap-2.5">
+              {filteredTasks.map((task) => {
                 const isSelected = selectedTasks.includes(task.id)
                 return (
                   <button
                     key={task.id}
                     onClick={() => toggleTask(task.id)}
-                    className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border-2 px-5 py-2.5 text-sm font-medium transition-all duration-200 ${
                       isSelected
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border bg-card text-foreground hover:border-primary/30"
+                        ? "border-primary bg-primary/10 text-primary shadow-sm shadow-primary/10"
+                        : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/5"
                     }`}
                   >
-                    {isSelected && <Check className="mr-1.5 inline h-3.5 w-3.5" />}
+                    {isSelected && (
+                      <Check className="h-3.5 w-3.5" />
+                    )}
                     {task.name}
                   </button>
                 )
               })}
             </div>
 
-            <p className="mt-4 text-center text-sm text-muted-foreground">
+            <p className="mt-5 text-center text-sm text-muted-foreground">
               {selectedTasks.length === 0
                 ? "Select at least one task, or skip to see all tools"
                 : `${selectedTasks.length} task${selectedTasks.length !== 1 ? "s" : ""} selected`}
             </p>
 
             {error && (
-              <p className="mt-4 text-center text-sm text-destructive">
+              <div className="mx-auto mt-4 max-w-sm rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-center text-sm text-destructive">
                 {error}
-              </p>
+              </div>
             )}
 
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-10 flex items-center justify-between">
               <Button
                 variant="ghost"
                 size="lg"
-                className="gap-2"
+                className="gap-2 rounded-xl"
                 onClick={() => setStep(1)}
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -264,6 +305,7 @@ export function OnboardingWizard({
                 <Button
                   variant="outline"
                   size="lg"
+                  className="rounded-xl"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
@@ -271,7 +313,7 @@ export function OnboardingWizard({
                 </Button>
                 <Button
                   size="lg"
-                  className="gap-2"
+                  className="gap-2 rounded-xl px-8"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
