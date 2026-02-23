@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Layers } from "lucide-react"
+import Image from "next/image"
 
 export function Footer() {
   return (
@@ -7,9 +7,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 md:flex-row md:justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground">
-              <Layers className="h-3 w-3 text-background" />
-            </div>
+            <Image src="/images/logo.png" alt="FlowStack" width={24} height={24} className="rounded-md" />
             <span className="font-serif text-sm font-bold text-foreground">
               FlowStack
             </span>

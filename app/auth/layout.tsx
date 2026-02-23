@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Layers } from "lucide-react"
+import Image from "next/image"
 
 export default function AuthLayout({
   children,
@@ -11,9 +11,7 @@ export default function AuthLayout({
       {/* Minimal header */}
       <header className="flex items-center px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Layers className="h-4 w-4 text-primary-foreground" />
-          </div>
+          <Image src="/images/logo.png" alt="FlowStack" width={32} height={32} className="rounded-lg" />
           <span className="font-serif text-xl font-bold tracking-tight text-foreground">
             FlowStack
           </span>

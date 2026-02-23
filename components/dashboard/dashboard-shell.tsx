@@ -1,11 +1,11 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
-  Layers,
   LayoutGrid,
   Bookmark,
   User,
@@ -50,9 +50,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
         {/* Logo */}
         <div className="flex h-16 items-center gap-2 border-b border-border px-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Layers className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <Image src="/images/logo.png" alt="FlowStack" width={32} height={32} className="rounded-lg" />
             <span className="font-serif text-lg font-bold text-foreground">
               FlowStack
             </span>
@@ -115,9 +113,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
         {/* Mobile header */}
         <header className="flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Layers className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <Image src="/images/logo.png" alt="FlowStack" width={32} height={32} className="rounded-lg" />
             <span className="font-serif text-lg font-bold text-foreground">
               FlowStack
             </span>
