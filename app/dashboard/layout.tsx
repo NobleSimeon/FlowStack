@@ -19,11 +19,11 @@ export default async function DashboardLayout({
   // Check if onboarding is completed
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, onboarding_completed, role_id, roles(name, slug)")
+    .select("display_name, onboarding_complete, role_id, roles(name, slug)")
     .eq("id", user.id)
     .single()
 
-  if (!profile?.onboarding_completed) {
+  if (!profile?.onboarding_complete) {
     redirect("/onboarding")
   }
 

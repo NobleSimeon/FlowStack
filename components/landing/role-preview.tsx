@@ -44,7 +44,7 @@ export function RolePreview({ roles }: { roles: Role[] }) {
             Tools curated for your role
           </h2>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty">
-            Pick your role and we surface the tools that matter.
+            Tell us what you do and see exactly which tools fit your daily work.
           </p>
         </div>
 

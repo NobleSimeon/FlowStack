@@ -57,8 +57,8 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
             className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-muted-foreground text-pretty md:text-lg animate-in fade-in slide-in-from-bottom-2 duration-500"
             style={{ animationDelay: "160ms", animationFillMode: "both" }}
           >
-            Tools curated by role, validated by professionals, and organized
-            for how you actually work.
+            Curated by role, validated by real professionals, and organized
+            around the tasks you do every day -- not marketing buzzwords.
           </p>
 
           {/* Role selector */}
@@ -139,12 +139,12 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
                 ))}
               </div>
 
-              <div className="mt-4 flex items-center justify-between rounded-xl border border-dashed border-border bg-secondary/50 px-4 py-3">
+              <div className="mt-4 flex flex-col items-start gap-3 rounded-xl border border-dashed border-border bg-secondary/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <span className="flex items-center gap-2 text-[13px] text-muted-foreground">
                   <Lock className="h-3.5 w-3.5" />
                   Sign up to save your stack and see all {selectedStack?.tools.length} tools
                 </span>
-                <Button size="sm" className="h-9 gap-2 rounded-full px-4 text-[13px]" asChild>
+                <Button size="sm" className="h-9 w-full gap-2 rounded-full px-4 text-[13px] sm:w-auto" asChild>
                   <Link href="/auth/sign-up">
                     Save My Stack
                     <ArrowRight className="h-3 w-3" />
@@ -158,13 +158,13 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
         {/* Trust line */}
         {!selectedRole && (
           <div
-            className="mt-16 flex items-center justify-center gap-8 text-[13px] text-muted-foreground animate-in fade-in duration-500"
+            className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[13px] text-muted-foreground animate-in fade-in duration-500"
             style={{ animationDelay: "400ms", animationFillMode: "both" }}
           >
             <span>40+ curated tools</span>
-            <span className="h-3 w-px bg-border" />
+            <span className="hidden sm:block h-3 w-px bg-border" />
             <span>Community validated</span>
-            <span className="h-3 w-px bg-border" />
+            <span className="hidden sm:block h-3 w-px bg-border" />
             <span>Role-specific stacks</span>
           </div>
         )}

@@ -72,7 +72,7 @@ export default function SignUpPage() {
             Create your account
           </CardTitle>
           <CardDescription>
-            Join FlowStack and find the right AI tools for your workflow
+            Start building your personalized AI toolkit in under 2 minutes
           </CardDescription>
         </CardHeader>
         <CardContent>

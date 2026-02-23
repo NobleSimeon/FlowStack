@@ -51,7 +51,7 @@ export function TrendingTools({ tools }: { tools: TrendingTool[] }) {
             Trending this week
           </h2>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty">
-            Tools gaining real momentum among professionals right now.
+            The tools professionals are actually switching to this week.
           </p>
         </div>
 

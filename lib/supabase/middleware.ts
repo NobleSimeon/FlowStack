@@ -1,33 +1,63 @@
-import { NextResponse, type NextRequest } from "next/server"
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-/**
- * Simplified middleware that checks for the Supabase auth token cookie.
- * Full @supabase/ssr integration will be added once the package installs.
- */
 export async function updateSession(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
 
-  // Check for Supabase auth cookies (sb-*-auth-token)
-  const hasAuthCookie = request.cookies
-    .getAll()
-    .some((c) => c.name.includes("-auth-token"))
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          )
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          )
+        },
+      },
+    },
+  )
+
+  // IMPORTANT: Do not run code between createServerClient and
+  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
+  // issues with users being randomly logged out.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   // Protected routes require authentication
-  const protectedPaths = ["/dashboard", "/onboarding", "/admin"]
-  const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
+  const protectedPaths = ['/dashboard', '/onboarding', '/admin']
+  const isProtected = protectedPaths.some((p) =>
+    request.nextUrl.pathname.startsWith(p),
+  )
 
-  if (isProtected && !hasAuthCookie) {
+  if (isProtected && !user) {
     const url = request.nextUrl.clone()
-    url.pathname = "/auth/login"
+    url.pathname = '/auth/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged-in users away from auth pages
-  if (hasAuthCookie && pathname.startsWith("/auth/")) {
+  // Redirect logged-in users away from auth pages (except callback)
+  if (
+    user &&
+    request.nextUrl.pathname.startsWith('/auth/') &&
+    !request.nextUrl.pathname.startsWith('/auth/callback')
+  ) {
     const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  return NextResponse.next()
+  return supabaseResponse
 }

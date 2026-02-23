@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Star } from "lucide-react"
 
 interface ReviewFormProps {
-  onSubmit: (review: { rating: number; title: string; body: string }) => void
+  onSubmit: (review: { rating: number; title: string; content: string }) => void
   onCancel: () => void
 }
 
@@ -14,13 +14,13 @@ export function ReviewForm({ onSubmit, onCancel }: ReviewFormProps) {
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
   const [title, setTitle] = useState("")
-  const [body, setBody] = useState("")
+  const [content, setContent] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async () => {
-    if (rating === 0 || !body.trim()) return
+    if (rating === 0 || !content.trim()) return
     setSubmitting(true)
-    await onSubmit({ rating, title: title.trim(), body: body.trim() })
+    await onSubmit({ rating, title: title.trim(), content: content.trim() })
     setSubmitting(false)
   }
 
@@ -75,8 +75,8 @@ export function ReviewForm({ onSubmit, onCancel }: ReviewFormProps) {
         <textarea
           id="review-body"
           placeholder="Share your experience using this tool. What do you like? What could be improved?"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           rows={4}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
         />
@@ -89,7 +89,7 @@ export function ReviewForm({ onSubmit, onCancel }: ReviewFormProps) {
         <Button
           size="sm"
           onClick={handleSubmit}
-          disabled={rating === 0 || !body.trim() || submitting}
+          disabled={rating === 0 || !content.trim() || submitting}
           className="bg-primary text-primary-foreground"
         >
           {submitting ? "Submitting..." : "Submit Review"}

@@ -50,7 +50,7 @@ export function UserProfile({ user, reviews, bookmarkCount }: UserProfileProps) 
       {/* Profile header */}
       <div className="mb-8">
         <h1 className="text-2xl font-serif font-bold text-foreground mb-1">Your Profile</h1>
-        <p className="text-muted-foreground">Manage your account and view your activity.</p>
+        <p className="text-muted-foreground">Manage your account and track your FlowStack activity.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -105,7 +105,7 @@ export function UserProfile({ user, reviews, bookmarkCount }: UserProfileProps) 
         {/* Stats + Reviews */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Card className="bg-card border-border">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
@@ -168,7 +168,7 @@ export function UserProfile({ user, reviews, bookmarkCount }: UserProfileProps) 
                         </div>
                       </div>
                       {review.title && <p className="text-sm font-medium mb-1">{review.title}</p>}
-                      <p className="text-sm text-muted-foreground">{review.body}</p>
+                      <p className="text-sm text-muted-foreground">{review.content}</p>
                       <p className="text-xs text-muted-foreground mt-2">
                         {new Date(review.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </p>

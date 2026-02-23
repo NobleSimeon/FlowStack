@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Layers, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -11,10 +12,8 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-foreground">
-            <Layers className="h-3.5 w-3.5 text-background" />
-          </div>
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/images/logo.png" alt="FlowStack" width={36} height={36} />
           <span className="font-serif text-lg font-bold tracking-tight text-foreground">
             FlowStack
           </span>

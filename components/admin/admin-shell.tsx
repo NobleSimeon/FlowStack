@@ -7,32 +7,34 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
   LayoutGrid,
-  Bookmark,
-  User,
+  MessageSquare,
+  Users,
+  Shield,
   LogOut,
+  ArrowLeft,
   Menu,
   X,
+  Wrench,
 } from "lucide-react"
 import { useState } from "react"
 
-interface DashboardShellProps {
+interface AdminShellProps {
   user: {
     id: string
     email: string
     displayName: string
-    roleName: string
-    roleSlug: string
   }
   children: React.ReactNode
 }
 
 const navItems = [
-  { label: "Explore Tools", href: "/dashboard", icon: LayoutGrid },
-  { label: "My Stack", href: "/dashboard/bookmarks", icon: Bookmark },
-  { label: "Profile", href: "/dashboard/profile", icon: User },
+  { label: "Overview", href: "/admin", icon: LayoutGrid },
+  { label: "Tools", href: "/admin/tools", icon: Wrench },
+  { label: "Reviews", href: "/admin/reviews", icon: MessageSquare },
+  { label: "Users", href: "/admin/users", icon: Users },
 ]
 
-export function DashboardShell({ user, children }: DashboardShellProps) {
+export function AdminShell({ user, children }: AdminShellProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -47,22 +49,26 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 border-r border-border bg-card lg:flex lg:flex-col">
-        {/* Logo */}
         <div className="flex h-16 items-center gap-2.5 border-b border-border px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/images/logo.png" alt="FlowStack" width={36} height={36} />
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <Image
+              src="/images/logo.png"
+              alt="FlowStack"
+              width={36}
+              height={36}
+            />
             <span className="font-serif text-lg font-bold text-foreground">
-              FlowStack
+              Admin
             </span>
           </Link>
+          <Shield className="ml-auto h-4 w-4 text-primary" />
         </div>
 
-        {/* Navigation */}
         <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
           {navItems.map((item) => {
             const isActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard"
+              item.href === "/admin"
+                ? pathname === "/admin"
                 : pathname.startsWith(item.href)
             return (
               <Link
@@ -79,9 +85,18 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
               </Link>
             )
           })}
+
+          <div className="mt-4 border-t border-border pt-4">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to App
+            </Link>
+          </div>
         </nav>
 
-        {/* User section */}
         <div className="border-t border-border p-4">
           <div className="mb-3 flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 font-serif text-sm font-bold text-primary">
@@ -92,7 +107,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
                 {user.displayName}
               </p>
               <p className="truncate text-xs text-muted-foreground">
-                {user.roleName}
+                Administrator
               </p>
             </div>
           </div>
@@ -108,15 +123,20 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
         </div>
       </aside>
 
-      {/* Main content area */}
       <div className="flex flex-1 flex-col">
         {/* Mobile header */}
         <header className="flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/images/logo.png" alt="FlowStack" width={36} height={36} />
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <Image
+              src="/images/logo.png"
+              alt="FlowStack"
+              width={36}
+              height={36}
+            />
             <span className="font-serif text-lg font-bold text-foreground">
-              FlowStack
+              Admin
             </span>
+            <Shield className="h-4 w-4 text-primary" />
           </Link>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -130,14 +150,13 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           </button>
         </header>
 
-        {/* Mobile nav drawer */}
         {mobileOpen && (
           <div className="border-b border-border bg-card p-4 lg:hidden">
             <nav className="flex flex-col gap-1">
               {navItems.map((item) => {
                 const isActive =
-                  item.href === "/dashboard"
-                    ? pathname === "/dashboard"
+                  item.href === "/admin"
+                    ? pathname === "/admin"
                     : pathname.startsWith(item.href)
                 return (
                   <Link
@@ -156,28 +175,9 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
                 )
               })}
             </nav>
-            <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 font-serif text-sm font-bold text-primary">
-                  {user.displayName.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-foreground">
-                  {user.displayName}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-2 text-muted-foreground"
-                onClick={handleSignOut}
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
         )}
 
-        {/* Page content */}
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>

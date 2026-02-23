@@ -50,7 +50,7 @@ export default function LoginPage() {
             Welcome back
           </CardTitle>
           <CardDescription>
-            Sign in to access your personalized AI stack
+            Sign in to access your personalized AI tool stack
           </CardDescription>
         </CardHeader>
         <CardContent>
