@@ -59,6 +59,7 @@ export default function SignUpPage() {
 
       // If user is auto-confirmed (email confirmation disabled), redirect to onboarding
       if (data.session) {
+        router.refresh()
         router.push("/onboarding")
       } else {
         router.push("/auth/sign-up-success")
