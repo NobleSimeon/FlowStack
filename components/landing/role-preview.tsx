@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import React from "react"
 import {
   Code,
   Palette,
@@ -12,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { GlowCard } from "@/components/ui/glow-card"
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -34,40 +36,49 @@ interface Role {
 
 export function RolePreview({ roles }: { roles: Role[] }) {
   return (
-    <section id="roles" className="px-6 py-20 md:py-28">
+    <section id="roles" className="relative px-6 py-20 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto mb-14 max-w-xl text-center">
-          <p className="mb-3 text-[13px] font-medium tracking-wide text-muted-foreground uppercase">
+        <div className="mx-auto mb-16 max-w-xl text-center">
+          <p className="mb-3 text-[13px] font-semibold tracking-widest text-primary uppercase">
             Personalized discovery
           </p>
-          <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground text-balance md:text-4xl">
+          <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground text-balance md:text-5xl">
             Tools curated for your role
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty">
-            Tell us what you do and see exactly which tools fit your daily work.
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
+            Tell us what you do and see exactly which tools fit your daily work. 
+            No more digging through endless directories.
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-3xl gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {roles
             .filter((r) => r.slug !== "other")
             .map((role, i) => {
               const Icon = iconMap[role.icon] || Sparkles
               return (
-                <div
+                <GlowCard
                   key={role.id}
-                  className="group flex flex-col bg-card p-6 transition-colors hover:bg-secondary/30 animate-in fade-in slide-in-from-bottom-2 duration-500"
-                  style={{ animationDelay: `${i * 60}ms`, animationFillMode: "both" }}
+                  className="group flex flex-col p-6 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-sm"
+                  style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
                 >
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-foreground">
-                    <Icon className="h-4 w-4" />
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="mb-1 text-sm font-semibold text-foreground">{role.name}</h3>
-                  <p className="flex-1 text-[13px] leading-relaxed text-muted-foreground">{role.description}</p>
-                  {role.tool_count > 0 && (
-                    <p className="mt-3 text-[12px] font-medium text-foreground">{role.tool_count} tools</p>
-                  )}
-                </div>
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">{role.name}</h3>
+                  <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">{role.description}</p>
+                  
+                  <div className="mt-6 flex items-center justify-between border-t border-border/50 pt-4">
+                    {role.tool_count > 0 ? (
+                      <span className="text-[13px] font-medium text-foreground px-2.5 py-1 rounded-md bg-secondary">
+                        {role.tool_count} tools
+                      </span>
+                    ) : (
+                      <span className="text-[13px] text-muted-foreground">New category</span>
+                    )}
+                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                  </div>
+                </GlowCard>
               )
             })}
         </div>
@@ -77,24 +88,24 @@ export function RolePreview({ roles }: { roles: Role[] }) {
           .map((role) => (
             <div
               key={role.id}
-              className="mx-auto mt-3 max-w-3xl rounded-2xl border border-dashed border-border/60 bg-card p-6 text-center"
+              className="mx-auto mt-6 max-w-5xl rounded-xl border border-dashed border-border/60 bg-secondary/30 p-8 text-center transition-colors hover:bg-secondary/50 hover:border-border"
             >
-              <p className="text-[13px] text-muted-foreground">
+              <p className="text-[14px] text-muted-foreground">
                 {"Don't see your role? "}
-                <span className="text-foreground">Tell us what you do</span>
+                <span className="text-foreground font-medium">Tell us what you do</span>
                 {" and pick your key tasks. We match you with the right tools based on how you actually work."}
               </p>
             </div>
           ))}
 
-        <div className="mt-12 text-center">
-          <Button className="h-9 gap-2 rounded-full text-[13px]" asChild>
+        <div className="mt-16 text-center">
+          <Button className="h-11 gap-2 rounded-full px-8 text-[14px] shadow-lg transition-transform hover:scale-105" asChild>
             <Link href="/dashboard">
               Browse All Roles
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-          <p className="mt-3 text-[13px] text-muted-foreground">
+          <p className="mt-4 text-[13px] text-muted-foreground">
             Instant access to the entire directory. No login required.
           </p>
         </div>

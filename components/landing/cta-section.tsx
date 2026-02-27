@@ -7,7 +7,7 @@ export function CTASection() {
   return (
     <section className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-xl rounded-2xl border border-primary/20 bg-card p-8 text-center shadow-sm sm:p-12">
+        <div className="mx-auto max-w-xl rounded-xl border border-primary/20 bg-card p-8 text-center shadow-sm sm:p-12">
           <Image
             src="/images/logo.png"
             alt="FlowStack"
