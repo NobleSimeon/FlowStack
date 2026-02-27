@@ -2,43 +2,37 @@
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { GlowCard } from "@/components/ui/glow-card"
+import { ToolLogo } from "@/components/landing/tool-logo"
 import {
   Star,
   BookmarkX,
-  CheckCircle2,
+  BadgeCheck,
   TrendingUp,
   Bookmark,
   Share2,
   Sparkles,
   Plus,
   ExternalLink,
+  ArrowRight,
 } from "lucide-react"
 import Link from "next/link"
 
-const pricingLabels: Record<string, { label: string; color: string }> = {
-  free: {
-    label: "Free",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-  freemium: {
-    label: "Freemium",
-    color: "bg-blue-50 text-blue-700 border-blue-200",
-  },
-  paid: {
-    label: "Paid",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-  enterprise: {
-    label: "Enterprise",
-    color: "bg-slate-100 text-slate-700 border-slate-200",
-  },
-  "open-source": {
-    label: "Open Source",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
+function PricingBadge({ model }: { model: string }) {
+  const labels: Record<string, string> = {
+    free: "Free",
+    freemium: "Freemium",
+    paid: "Paid",
+    enterprise: "Enterprise",
+    "open-source": "Open Source",
+  }
+  return (
+    <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground capitalize">
+      {labels[model] || model}
+    </span>
+  )
 }
 
 interface BookmarkedTool {
@@ -115,12 +109,12 @@ export function BookmarksList({
   return (
     <div className="p-6 lg:p-8">
       {/* Page header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="mb-1 font-serif text-2xl font-bold text-foreground">
             My AI Stack
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {tools.length > 0
               ? `${tools.length} tool${tools.length !== 1 ? "s" : ""} in your curated stack.`
               : "Save tools from the directory to build your stack."}
@@ -130,7 +124,7 @@ export function BookmarksList({
           <Button
             variant="outline"
             onClick={handleShareStack}
-            className="gap-2"
+            className="gap-2 rounded-xl h-10"
           >
             <Share2 className="h-4 w-4" />
             {shareMsg || "Share My Stack"}
@@ -140,8 +134,8 @@ export function BookmarksList({
 
       {tools.length === 0 ? (
         <div className="py-16 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary">
-            <Bookmark className="h-7 w-7 text-muted-foreground" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-secondary">
+            <Bookmark className="h-6 w-6 text-muted-foreground" />
           </div>
           <p className="mb-2 text-lg font-medium text-foreground">
             Your stack starts here
@@ -150,163 +144,144 @@ export function BookmarksList({
             Save tools from the directory to build your personalized AI toolkit.
             We{"'"}ll keep track of everything in one place.
           </p>
-          <Button asChild>
+          <Button className="rounded-xl h-10 px-6" asChild>
             <Link href="/dashboard">Explore Tools</Link>
           </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {tools.map((tool) => (
-            <Card
+            <GlowCard
               key={tool.bookmarkId}
-              className="border-border bg-card transition-all hover:border-primary/30 hover:shadow-md"
+              className="group flex flex-col p-6 hover:border-primary/30 hover:shadow-md shadow-sm"
             >
-              <CardContent className="p-5">
-                <div className="mb-3 flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary">
-                      {tool.logo_url ? (
-                        <img
-                          src={tool.logo_url}
-                          alt={tool.name}
-                          className="h-6 w-6 object-contain"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="font-serif text-lg font-bold text-primary">
-                          {tool.name.charAt(0)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <Link
-                          href={`/dashboard/tools/${tool.slug}`}
-                          className="truncate font-semibold text-foreground transition-colors hover:text-primary"
-                        >
-                          {tool.name}
-                        </Link>
-                        {tool.is_verified && (
-                          <CheckCircle2 className="h-4 w-4 shrink-0 fill-primary/10 text-primary" />
-                        )}
-                        {tool.is_trending && (
-                          <TrendingUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
-                        )}
-                      </div>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {tool.tagline}
-                      </p>
-                    </div>
+              <div className="mb-4 flex items-start gap-3">
+                <ToolLogo name={tool.name} logoUrl={tool.logo_url || ""} size={44} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      href={`/dashboard/tools/${tool.slug}`}
+                      className="truncate text-base font-semibold text-foreground transition-colors hover:text-primary"
+                    >
+                      {tool.name}
+                    </Link>
+                    {tool.is_verified && (
+                      <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />
+                    )}
+                    {tool.is_trending && (
+                      <TrendingUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                    )}
                   </div>
+                  <p className="text-[12px] text-muted-foreground">
+                    {tool.category_name}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <PricingBadge model={tool.pricing_model} />
                   <button
                     onClick={() => removeBookmark(tool.bookmarkId, tool.id)}
-                    className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-destructive/10"
+                    className="rounded-md p-1 transition-colors hover:bg-destructive/10"
                     aria-label="Remove from stack"
                   >
                     <BookmarkX className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                   </button>
                 </div>
+              </div>
 
-                <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                  {tool.description}
-                </p>
+              <p className="mb-1.5 text-[14px] font-medium text-foreground">
+                {tool.tagline}
+              </p>
+              <p className="mb-4 flex-1 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
+                {tool.description}
+              </p>
 
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary" className="text-xs font-normal">
-                    {tool.category_name}
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className={`text-xs font-normal ${pricingLabels[tool.pricing_model]?.color || ""}`}
-                  >
-                    {pricingLabels[tool.pricing_model]?.label ||
-                      tool.pricing_model}
-                  </Badge>
-                </div>
-
-                <div className="flex items-center justify-between border-t border-border pt-3">
-                  <div className="flex items-center gap-1">
+              <div className="flex items-center justify-between border-t border-border/50 pt-4 mt-auto">
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-0.5">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    <span className="text-sm font-medium">
+                    <span className="text-[13px] font-medium text-foreground">
                       {Number(tool.average_rating).toFixed(1)}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      ({tool.review_count})
-                    </span>
-                  </div>
+                  </span>
+                  <span className="text-[12px] text-muted-foreground">
+                    {tool.review_count} reviews
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {tool.website_url && (
+                    <a
+                      href={tool.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      Visit <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
                   <Link
                     href={`/dashboard/tools/${tool.slug}`}
-                    className="text-xs font-medium text-primary transition-colors hover:text-primary/80"
+                    className="text-[13px] font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100"
                   >
-                    Details
+                    View <ArrowRight className="inline h-3.5 w-3.5" />
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </GlowCard>
           ))}
         </div>
       )}
 
       {/* Recommendations section */}
       {recommendations.length > 0 && (
-        <div className="mt-12">
+        <div className="mt-12 border-t border-border/50 pt-10">
           <div className="mb-6 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            <h2 className="font-serif text-xl font-bold text-foreground">
-              Recommended for You
-            </h2>
+            <div>
+              <h2 className="font-serif text-xl font-bold text-foreground">
+                Recommended for You
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Based on your role and tasks, you might also like these tools.
+              </p>
+            </div>
           </div>
-          <p className="mb-6 -mt-4 text-sm text-muted-foreground">
-            Based on your role and tasks, you might also like these tools.
-          </p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {recommendations.map((tool) => (
               <Card
                 key={tool.id}
                 className="border-border border-dashed bg-card/50 transition-all hover:border-primary/30 hover:bg-card"
               >
-                <CardContent className="p-4">
-                  <div className="mb-2 flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-secondary">
-                      {tool.logo_url ? (
-                        <img
-                          src={tool.logo_url}
-                          alt={tool.name}
-                          className="h-5 w-5 object-contain"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="font-serif text-sm font-bold text-primary">
-                          {tool.name.charAt(0)}
-                        </span>
-                      )}
-                    </div>
+                <CardContent className="p-4 flex flex-col h-full">
+                  <div className="mb-3 flex items-start gap-3">
+                    <ToolLogo name={tool.name} logoUrl={tool.logo_url || ""} size={32} />
                     <div className="min-w-0 flex-1">
-                      <Link
-                        href={`/dashboard/tools/${tool.slug}`}
-                        className="block truncate text-sm font-semibold text-foreground transition-colors hover:text-primary"
-                      >
-                        {tool.name}
-                      </Link>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
+                        <Link
+                          href={`/dashboard/tools/${tool.slug}`}
+                          className="block truncate text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                        >
+                          {tool.name}
+                        </Link>
+                        {tool.is_verified && (
+                          <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />
+                        )}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-1">
                         <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-[11px] text-muted-foreground">
                           {Number(tool.average_rating).toFixed(1)}
                         </span>
                       </div>
                     </div>
-                    {tool.is_verified && (
-                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
-                    )}
                   </div>
-                  <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                  <p className="line-clamp-2 text-[12px] leading-relaxed text-muted-foreground flex-1">
                     {tool.tagline}
                   </p>
                   <Link
                     href={`/dashboard/tools/${tool.slug}`}
-                    className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary transition-colors hover:text-primary/80"
+                    className="mt-4 inline-flex items-center gap-1 text-[12px] font-medium text-primary transition-colors hover:text-primary/80"
                   >
-                    <Plus className="h-3 w-3" /> Add to stack
+                    <Plus className="h-3.5 w-3.5" /> Add to stack
                   </Link>
                 </CardContent>
               </Card>

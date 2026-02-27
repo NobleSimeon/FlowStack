@@ -5,14 +5,21 @@ import { createClient } from "@/lib/supabase/client"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { GlowCard } from "@/components/ui/glow-card"
+import { ToolLogo } from "@/components/landing/tool-logo"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Search,
   Star,
   ExternalLink,
   Bookmark,
   BookmarkCheck,
-  CheckCircle2,
+  BadgeCheck,
   TrendingUp,
   X,
   SlidersHorizontal,
@@ -23,6 +30,11 @@ import {
   Megaphone,
   BarChart3,
   Sparkles,
+  ArrowRight,
+  Quote,
+  ChevronDown,
+  Filter,
+  ArrowUpDown,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -54,29 +66,6 @@ interface Category {
 
 type SortOption = "rating" | "reviews" | "trending" | "name"
 
-const pricingLabels: Record<string, { label: string; color: string }> = {
-  free: {
-    label: "Free",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-  freemium: {
-    label: "Freemium",
-    color: "bg-blue-50 text-blue-700 border-blue-200",
-  },
-  paid: {
-    label: "Paid",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-  enterprise: {
-    label: "Enterprise",
-    color: "bg-slate-100 text-slate-700 border-slate-200",
-  },
-  "open-source": {
-    label: "Open Source",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-}
-
 const categoryIconMap: Record<string, React.ElementType> = {
   "code-development": Code,
   "design-creative": Palette,
@@ -103,6 +92,21 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "trending", label: "Trending" },
   { value: "name", label: "Name A-Z" },
 ]
+
+function PricingBadge({ model }: { model: string }) {
+  const labels: Record<string, string> = {
+    free: "Free",
+    freemium: "Freemium",
+    paid: "Paid",
+    enterprise: "Enterprise",
+    "open-source": "Open Source",
+  }
+  return (
+    <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground capitalize">
+      {labels[model] || model}
+    </span>
+  )
+}
 
 interface ToolDirectoryProps {
   tools: Tool[]
@@ -198,7 +202,6 @@ export function ToolDirectory({
     setSearchQuery("")
   }
 
-  // Category counts
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: tools.length }
     for (const tool of tools) {
@@ -207,130 +210,140 @@ export function ToolDirectory({
     return counts
   }, [tools])
 
-  const SidebarContent = () => (
-    <div className="flex flex-col gap-6">
-      {/* Categories */}
-      <div>
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Categories
-        </h3>
-        <div className="flex flex-col gap-0.5">
-          <button
-            onClick={() => setSelectedCategory("all")}
-            className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
-              selectedCategory === "all"
-                ? "bg-primary/10 font-medium text-primary"
-                : "text-foreground hover:bg-muted"
-            }`}
+  const SidebarContent = () => {
+    return (
+      <div className="flex flex-col gap-6">
+        <div>
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Categories
+          </h3>
+          <div className="flex flex-col gap-0.5">
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
+                selectedCategory === "all"
+                  ? "bg-primary/10 font-medium text-primary"
+                  : "text-foreground hover:bg-muted"
+              }`}
+            >
+              <span>All Tools</span>
+              <span className="text-xs text-muted-foreground">
+                {categoryCounts.all}
+              </span>
+            </button>
+            {categories.map((cat) => {
+              const Icon = categoryIconMap[cat.slug] || Sparkles
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.slug)}
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
+                    selectedCategory === cat.slug
+                      ? "bg-primary/10 font-medium text-primary"
+                      : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon className="h-3.5 w-3.5" />
+                    {cat.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {categoryCounts[cat.slug] || 0}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Filters
+          </h3>
+          <div className="flex flex-col gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="font-medium">
+                      {selectedPricing === "all" 
+                        ? "Pricing: All" 
+                        : pricingOptions.find(p => p.value === selectedPricing)?.label}
+                    </span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-50 rounded-xl p-1">
+                {pricingOptions.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => setSelectedPricing(opt.value)}
+                    className={`cursor-pointer rounded-lg px-3 py-2 text-sm ${
+                      selectedPricing === opt.value
+                        ? "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary"
+                        : ""
+                    }`}
+                  >
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="font-medium">
+                      Sort: {sortOptions.find(s => s.value === sortBy)?.label}
+                    </span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-50 rounded-xl p-1">
+                {sortOptions.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => setSortBy(opt.value)}
+                    className={`cursor-pointer rounded-lg px-3 py-2 text-sm ${
+                      sortBy === opt.value
+                        ? "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary"
+                        : ""
+                    }`}
+                  >
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {activeFilterCount > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearFilters}
+            className="justify-start gap-1.5 text-xs text-muted-foreground"
           >
-            <span>All Tools</span>
-            <span className="text-xs text-muted-foreground">
-              {categoryCounts.all}
-            </span>
-          </button>
-          {categories.map((cat) => {
-            const Icon = categoryIconMap[cat.slug] || Sparkles
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
-                className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
-                  selectedCategory === cat.slug
-                    ? "bg-primary/10 font-medium text-primary"
-                    : "text-foreground hover:bg-muted"
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <Icon className="h-3.5 w-3.5" />
-                  {cat.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {categoryCounts[cat.slug] || 0}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+            <X className="h-3 w-3" /> Clear all filters
+          </Button>
+        )}
       </div>
-
-      {/* Pricing */}
-      <div>
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Pricing
-        </h3>
-        <div className="flex flex-col gap-0.5">
-          {pricingOptions.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => setSelectedPricing(opt.value)}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
-                selectedPricing === opt.value
-                  ? "bg-primary/10 font-medium text-primary"
-                  : "text-foreground hover:bg-muted"
-              }`}
-            >
-              <div
-                className={`h-3.5 w-3.5 rounded-full border-2 transition-all ${
-                  selectedPricing === opt.value
-                    ? "border-primary bg-primary"
-                    : "border-muted-foreground/40"
-                }`}
-              >
-                {selectedPricing === opt.value && (
-                  <div className="mt-[3px] ml-[3px] h-1 w-1 rounded-full bg-primary-foreground" />
-                )}
-              </div>
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Sort */}
-      <div>
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Sort By
-        </h3>
-        <div className="flex flex-col gap-0.5">
-          {sortOptions.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => setSortBy(opt.value)}
-              className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                sortBy === opt.value
-                  ? "bg-primary/10 font-medium text-primary"
-                  : "text-foreground hover:bg-muted"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {activeFilterCount > 0 && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={clearFilters}
-          className="justify-start gap-1.5 text-xs text-muted-foreground"
-        >
-          <X className="h-3 w-3" /> Clear all filters
-        </Button>
-      )}
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="flex h-full">
-      {/* Desktop sidebar filters */}
-      <aside className="hidden w-60 shrink-0 border-r border-border bg-card p-5 lg:block">
+      <aside className="hidden w-60 shrink-0 border-r border-border bg-card p-5 lg:block overflow-y-auto">
         <SidebarContent />
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 overflow-auto p-6 lg:p-8">
-        {/* Page header */}
         <div className="mb-6">
           <h1 className="font-serif text-2xl font-bold text-foreground">
             Explore AI Tools
@@ -340,7 +353,6 @@ export function ToolDirectory({
           </p>
         </div>
 
-        {/* Search bar */}
         <div className="mb-6 flex items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -348,7 +360,7 @@ export function ToolDirectory({
               placeholder="Search tools by name, description, or use case..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 border-border bg-card pl-10"
+              className="h-11 border-border bg-card pl-10 rounded-xl"
             />
             {searchQuery && (
               <button
@@ -359,11 +371,10 @@ export function ToolDirectory({
               </button>
             )}
           </div>
-          {/* Mobile filter toggle */}
           <Button
             variant="outline"
             onClick={() => setMobileSidebar(!mobileSidebar)}
-            className="h-11 gap-2 lg:hidden"
+            className="h-11 gap-2 rounded-xl lg:hidden"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span className="hidden sm:inline">Filters</span>
@@ -375,24 +386,19 @@ export function ToolDirectory({
           </Button>
         </div>
 
-        {/* Mobile filter panel */}
         {mobileSidebar && (
           <div className="mb-6 rounded-xl border border-border bg-card p-5 lg:hidden">
             <SidebarContent />
           </div>
         )}
 
-        {/* Results count + active filters */}
         <div className="mb-4 flex items-center gap-3">
           <p className="text-sm text-muted-foreground">
             {filteredTools.length}{" "}
             {filteredTools.length === 1 ? "tool" : "tools"} found
           </p>
           {selectedCategory !== "all" && (
-            <Badge
-              variant="secondary"
-              className="gap-1 text-xs"
-            >
+            <Badge variant="secondary" className="gap-1 text-xs">
               {categories.find((c) => c.slug === selectedCategory)?.name}
               <button onClick={() => setSelectedCategory("all")}>
                 <X className="h-3 w-3" />
@@ -400,10 +406,7 @@ export function ToolDirectory({
             </Badge>
           )}
           {selectedPricing !== "all" && (
-            <Badge
-              variant="secondary"
-              className="gap-1 text-xs"
-            >
+            <Badge variant="secondary" className="gap-1 text-xs">
               {pricingOptions.find((p) => p.value === selectedPricing)?.label}
               <button onClick={() => setSelectedPricing("all")}>
                 <X className="h-3 w-3" />
@@ -412,7 +415,6 @@ export function ToolDirectory({
           )}
         </div>
 
-        {/* Tool grid */}
         {filteredTools.length === 0 ? (
           <div className="py-16 text-center">
             <p className="mb-2 text-lg font-medium text-foreground">
@@ -428,50 +430,36 @@ export function ToolDirectory({
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3">
             {filteredTools.map((tool) => (
-              <Card
+              <GlowCard
                 key={tool.id}
-                className="group overflow-hidden border-border bg-card transition-all duration-200 hover:border-primary/30 hover:shadow-md"
+                className="group flex flex-col p-6 hover:border-primary/30 hover:shadow-md shadow-sm"
               >
-                <CardContent className="p-5">
-                  <div className="mb-3 flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary">
-                        {tool.logo_url ? (
-                          <img
-                            src={tool.logo_url}
-                            alt={tool.name}
-                            className="h-6 w-6 object-contain"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <span className="font-serif text-lg font-bold text-primary">
-                            {tool.name.charAt(0)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <Link
-                            href={`/dashboard/tools/${tool.slug}`}
-                            className="truncate font-semibold text-foreground transition-colors hover:text-primary"
-                          >
-                            {tool.name}
-                          </Link>
-                          {tool.is_verified && (
-                            <CheckCircle2 className="h-4 w-4 shrink-0 fill-primary/10 text-primary" />
-                          )}
-                          {tool.is_trending && (
-                            <TrendingUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
-                          )}
-                        </div>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {tool.tagline}
-                        </p>
-                      </div>
+                <div className="mb-4 flex items-start gap-3">
+                  <ToolLogo name={tool.name} logoUrl={tool.logo_url || ""} size={44} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={`/dashboard/tools/${tool.slug}`}
+                        className="truncate text-base font-semibold text-foreground transition-colors hover:text-primary"
+                      >
+                        {tool.name}
+                      </Link>
+                      {tool.is_verified && (
+                        <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />
+                      )}
+                      {tool.is_trending && (
+                        <TrendingUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                      )}
                     </div>
+                    <p className="text-[12px] text-muted-foreground">
+                      {tool.category_name}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <PricingBadge model={tool.pricing_model} />
                     <button
                       onClick={() => toggleBookmark(tool.id)}
-                      className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                      className="rounded-md p-1 transition-colors hover:bg-secondary"
                       aria-label={
                         bookmarkedIds.has(tool.id)
                           ? "Remove bookmark"
@@ -485,57 +473,61 @@ export function ToolDirectory({
                       )}
                     </button>
                   </div>
+                </div>
 
-                  <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {tool.description}
-                  </p>
+                <p className="mb-1.5 text-[14px] font-medium text-foreground">
+                  {tool.tagline}
+                </p>
+                <p className="mb-4 flex-1 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
+                  {tool.description}
+                </p>
 
-                  <div className="mb-3 flex flex-wrap items-center gap-2">
-                    {tool.category_name && (
-                      <Badge variant="secondary" className="text-xs font-normal">
-                        {tool.category_name}
-                      </Badge>
-                    )}
-                    <Badge
-                      variant="outline"
-                      className={`text-xs font-normal ${pricingLabels[tool.pricing_model]?.color || ""}`}
-                    >
-                      {pricingLabels[tool.pricing_model]?.label ||
-                        tool.pricing_model}
-                    </Badge>
+                {tool.why_professionals_use && (
+                  <div className="mb-5 rounded-xl bg-secondary/60 px-4 py-3">
+                    <div className="mb-1 flex items-center gap-1.5">
+                      <Quote className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                        Why professionals use this
+                      </span>
+                    </div>
+                    <p className="line-clamp-2 text-[12px] leading-relaxed text-muted-foreground">
+                      {tool.why_professionals_use}
+                    </p>
                   </div>
+                )}
 
-                  <div className="flex items-center justify-between border-t border-border pt-3">
-                    <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between border-t border-border/50 pt-4 mt-auto">
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-0.5">
                       <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-[13px] font-medium text-foreground">
                         {Number(tool.average_rating).toFixed(1)}
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        ({tool.review_count})
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {tool.website_url && (
-                        <a
-                          href={tool.website_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-primary"
-                        >
-                          Visit <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-                      <Link
-                        href={`/dashboard/tools/${tool.slug}`}
-                        className="text-xs font-medium text-primary transition-colors hover:text-primary/80"
-                      >
-                        Details
-                      </Link>
-                    </div>
+                    </span>
+                    <span className="text-[12px] text-muted-foreground">
+                      {tool.review_count} reviews
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-3">
+                    {tool.website_url && (
+                      <a
+                        href={tool.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        Visit <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                    <Link
+                      href={`/dashboard/tools/${tool.slug}`}
+                      className="text-[13px] font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      View <ArrowRight className="inline h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </GlowCard>
             ))}
           </div>
         )}
