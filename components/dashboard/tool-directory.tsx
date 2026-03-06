@@ -212,29 +212,74 @@ export function ToolDirectory({
     for (const tool of tools) {
       counts[tool.category_slug] = (counts[tool.category_slug] || 0) + 1;
     }
-    return counts
-  }, [tools])
+    return counts;
+  }, [tools]);
 
   const handleHorizontalWheel = (event: WheelEvent<HTMLDivElement>) => {
-    const container = event.currentTarget
-    const canScrollHorizontally = container.scrollWidth > container.clientWidth
-    if (!canScrollHorizontally) return
+    const container = event.currentTarget;
+    const canScrollHorizontally = container.scrollWidth > container.clientWidth;
+    if (!canScrollHorizontally) return;
 
-    const isMostlyVerticalWheel = Math.abs(event.deltaY) > Math.abs(event.deltaX)
-    if (!isMostlyVerticalWheel) return
+    const isMostlyVerticalWheel = Math.abs(event.deltaY) > Math.abs(event.deltaX);
+    if (!isMostlyVerticalWheel) return;
 
-    event.preventDefault()
-    container.scrollLeft += event.deltaY
-  }
+    event.preventDefault();
+    container.scrollLeft += event.deltaY;
+  };
 
-  const SidebarContent = () => {
-    return (
-      <div className="flex flex-col gap-6">
-        <div>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Categories
-          </h3>
-          <div className="flex flex-col gap-0.5" onWheel={handleHorizontalWheel}>
+  const handleCardClick = (
+    event: React.MouseEvent<HTMLElement>,
+    slug: string,
+  ) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("a,button")) return;
+    router.push(`/dashboard/tools/${slug}`);
+  };
+
+  const handleCardKeyDown = (
+    event: React.KeyboardEvent<HTMLElement>,
+    slug: string,
+  ) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    router.push(`/dashboard/tools/${slug}`);
+  };
+
+  return (
+    <div className="p-6 lg:p-8">
+      <div className="mb-6">
+        <h1 className="font-serif text-2xl font-bold text-foreground">
+          Explore AI Tools
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Browse, compare, and save the best AI tools for your workflow.
+        </p>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search tools by name, description, or use case..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-11 rounded-xl border-border bg-card pl-10"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            >
+              <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div
+            className="flex flex-1 items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            onWheel={handleHorizontalWheel}
+          >
             <button
               onClick={() => setSelectedCategory("all")}
               className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
@@ -286,7 +331,7 @@ export function ToolDirectory({
           <Button
             variant={showFilters ? "secondary" : "outline"}
             onClick={() => setShowFilters(!showFilters)}
-            className="shrink-0 gap-2 rounded-full h-10 px-4"
+            className="h-10 shrink-0 gap-2 rounded-full px-4"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span className="hidden sm:inline">Filters</span>
@@ -299,7 +344,6 @@ export function ToolDirectory({
         </div>
       </div>
 
-      {/* Expandable Filters Section */}
       {showFilters && (
         <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center gap-2">
@@ -309,7 +353,7 @@ export function ToolDirectory({
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm min-w-[140px]">
+                <button className="flex min-w-[140px] items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm">
                   <span className="font-medium">
                     {selectedPricing === "all"
                       ? "All Options"
@@ -319,10 +363,7 @@ export function ToolDirectory({
                   <ChevronDown className="h-4 w-4 opacity-50" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-40 rounded-xl p-1"
-              >
+              <DropdownMenuContent align="start" className="w-40 rounded-xl p-1">
                 {pricingOptions.map((opt) => (
                   <DropdownMenuItem
                     key={opt.value}
@@ -347,17 +388,14 @@ export function ToolDirectory({
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm min-w-[150px]">
+                <button className="flex min-w-[150px] items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground transition-all hover:border-primary/30 hover:shadow-sm">
                   <span className="font-medium">
                     {sortOptions.find((s) => s.value === sortBy)?.label}
                   </span>
                   <ChevronDown className="h-4 w-4 opacity-50" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-44 rounded-xl p-1"
-              >
+              <DropdownMenuContent align="start" className="w-44 rounded-xl p-1">
                 {sortOptions.map((opt) => (
                   <DropdownMenuItem
                     key={opt.value}
