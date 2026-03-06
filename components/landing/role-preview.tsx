@@ -59,24 +59,21 @@ export function RolePreview({ roles }: { roles: Role[] }) {
               return (
                 <GlowCard
                   key={role.id}
-                  className="group flex flex-col p-6 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-sm"
+                  className="group p-6 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-sm"
                   style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
                 >
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-foreground">{role.name}</h3>
-                  <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">{role.description}</p>
-                  
-                  <div className="mt-6 flex items-center justify-between border-t border-border/50 pt-4">
-                    {role.tool_count > 0 ? (
-                      <span className="text-[13px] font-medium text-foreground px-2.5 py-1 rounded-md bg-secondary">
-                        {role.tool_count} tools
-                      </span>
-                    ) : (
-                      <span className="text-[13px] text-muted-foreground">New category</span>
-                    )}
-                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                  <div className="flex flex-row gap-3">
+                    <div className="flex flex-col">
+                      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="mb-2 text-lg font-semibold text-foreground">{role.name}</h3>
+                      <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">{role.description}</p>
+                    </div>
+                    
+                    <div className="self-end">
+                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                    </div>
                   </div>
                 </GlowCard>
               )

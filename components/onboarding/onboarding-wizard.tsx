@@ -182,7 +182,7 @@ export function OnboardingWizard({
                   <button
                     key={role.id}
                     onClick={() => handleRoleSelect(role.id)}
-                    className={`group relative flex items-start gap-3.5 rounded-xl border p-4 text-left transition-all duration-300 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${
+                    className={`group relative flex items-start gap-3.5 rounded-xl border p-4 text-left transition-all duration-300 backdrop-blur-md cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${
                       isSelected
                         ? "border-primary/50 bg-primary/10 ring-1 ring-primary/50 shadow-[0_0_20px_rgba(245,158,11,0.15),inset_0_1px_0_rgba(255,255,255,0.1)]"
                         : "border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"

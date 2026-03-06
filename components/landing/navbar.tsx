@@ -12,7 +12,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900">
             <Image src="/images/logo.png" alt="FlowStack" width={28} height={28} />
@@ -22,7 +22,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-6 lg:gap-8 md:flex shrink-0">
           <Link href="#how-it-works" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
             How It Works
           </Link>
@@ -32,21 +32,9 @@ export function Navbar() {
           <Link href="#roles" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">
             By Role
           </Link>
-
-          <div className="hidden items-center gap-6 lg:flex">
-            <Link href="#how-it-works" className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              How It Works
-            </Link>
-            <Link href="#trending" className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Trending
-            </Link>
-            <Link href="#roles" className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              By Role
-            </Link>
-          </div>
         </div>
 
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-4 md:flex shrink">
           {/* The new Command Menu */}
           <CommandMenu />
 
