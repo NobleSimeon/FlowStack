@@ -34,7 +34,7 @@ export function CTASection() {
               </Link>
             </Button>
             <span className="text-[12px] text-muted-foreground">
-              Instant access. No account needed.
+              Instant access.
             </span>
           </div>
         </div>
