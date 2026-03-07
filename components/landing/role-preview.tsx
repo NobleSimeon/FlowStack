@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import React from "react"
+import Link from "next/link";
+import React from "react";
 import {
   Code,
   Palette,
@@ -11,9 +11,9 @@ import {
   BarChart3,
   Sparkles,
   ArrowRight,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { GlowCard } from "@/components/ui/glow-card"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { GlowCard } from "@/components/ui/glow-card";
 
 const iconMap: Record<string, React.ElementType> = {
   Code,
@@ -23,15 +23,15 @@ const iconMap: Record<string, React.ElementType> = {
   PenTool,
   BarChart3,
   Sparkles,
-}
+};
 
 interface Role {
-  id: string
-  name: string
-  slug: string
-  description: string
-  icon: string
-  tool_count: number
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  icon: string;
+  tool_count: number;
 }
 
 export function RolePreview({ roles }: { roles: Role[] }) {
@@ -45,8 +45,8 @@ export function RolePreview({ roles }: { roles: Role[] }) {
           <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground text-balance md:text-5xl">
             Tools curated for your role
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
-            Tell us what you do and see exactly which tools fit your daily work. 
+          <p className="mt-4 text-base leading-relaxed text-foreground text-pretty">
+            Tell us what you do and see exactly which tools fit your daily work.
             No more digging through endless directories.
           </p>
         </div>
@@ -55,28 +55,35 @@ export function RolePreview({ roles }: { roles: Role[] }) {
           {roles
             .filter((r) => r.slug !== "other")
             .map((role, i) => {
-              const Icon = iconMap[role.icon] || Sparkles
+              const Icon = iconMap[role.icon] || Sparkles;
               return (
                 <GlowCard
                   key={role.id}
                   className="group p-6 hover:border-primary/30 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-sm"
-                  style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
+                  style={{
+                    animationDelay: `${i * 100}ms`,
+                    animationFillMode: "both",
+                  }}
                 >
                   <div className="flex flex-row gap-3">
                     <div className="flex flex-col">
                       <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <h3 className="mb-2 text-lg font-semibold text-foreground">{role.name}</h3>
-                      <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">{role.description}</p>
+                      <h3 className="mb-2 text-lg font-semibold text-foreground">
+                        {role.name}
+                      </h3>
+                      <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">
+                        {role.description}
+                      </p>
                     </div>
-                    
+
                     <div className="self-end">
                       <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
                     </div>
                   </div>
                 </GlowCard>
-              )
+              );
             })}
         </div>
 
@@ -88,9 +95,13 @@ export function RolePreview({ roles }: { roles: Role[] }) {
               className="mx-auto mt-6 max-w-5xl rounded-xl border border-dashed border-border/60 bg-secondary/30 p-8 text-center transition-colors hover:bg-secondary/50 hover:border-border"
             >
               <p className="text-[14px] text-muted-foreground">
-                <span className="text-foreground font-medium">Don't see your role?</span>
-                {" "}
-                <Link href="/dashboard" className="font-medium text-primary underline underline-offset-4 hover:text-primary/80">
+                <span className="text-foreground font-medium">
+                  Don't see your role?
+                </span>{" "}
+                <Link
+                  href="/dashboard"
+                  className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                >
                   Maybe click to see more roles
                 </Link>
               </p>
@@ -98,7 +109,10 @@ export function RolePreview({ roles }: { roles: Role[] }) {
           ))}
 
         <div className="mt-16 text-center">
-          <Button className="h-11 gap-2 rounded-full px-8 text-[14px] shadow-lg transition-transform hover:scale-105" asChild>
+          <Button
+            className="h-11 gap-2 rounded-full px-8 text-[14px] shadow-lg transition-transform hover:scale-105"
+            asChild
+          >
             <Link href="/dashboard">
               Browse All Roles
               <ArrowRight className="h-4 w-4" />
@@ -107,5 +121,5 @@ export function RolePreview({ roles }: { roles: Role[] }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

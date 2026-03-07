@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ArrowRight, TrendingUp, Star, BadgeCheck } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ToolLogo } from "@/components/landing/tool-logo"
-import { GlowCard } from "@/components/ui/glow-card"
+import Link from "next/link";
+import { ArrowRight, TrendingUp, Star, BadgeCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ToolLogo } from "@/components/landing/tool-logo";
+import { GlowCard } from "@/components/ui/glow-card";
 
 interface TrendingTool {
-  id: string
-  name: string
-  slug: string
-  tagline: string
-  description: string
-  website_url: string
-  logo_url: string
-  pricing_model: string
-  is_verified: boolean
-  trending_reason: string
-  average_rating: number
-  review_count: number
-  category_name: string
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  website_url: string;
+  logo_url: string;
+  pricing_model: string;
+  is_verified: boolean;
+  trending_reason: string;
+  average_rating: number;
+  review_count: number;
+  category_name: string;
 }
 
 function PricingBadge({ model }: { model: string }) {
@@ -29,18 +29,18 @@ function PricingBadge({ model }: { model: string }) {
     paid: "Paid",
     enterprise: "Enterprise",
     "open-source": "Open Source",
-  }
+  };
   return (
     <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
       {labels[model] || model}
     </span>
-  )
+  );
 }
 
 export function TrendingTools({ tools }: { tools: TrendingTool[] }) {
-  if (!tools || tools.length === 0) return null
+  if (!tools || tools.length === 0) return null;
 
-  const marqueeTools = [...tools, ...tools, ...tools]
+  const marqueeTools = [...tools, ...tools, ...tools];
 
   return (
     <section id="trending" className="overflow-hidden py-20 md:py-32">
@@ -67,7 +67,11 @@ export function TrendingTools({ tools }: { tools: TrendingTool[] }) {
             >
               <GlowCard className="flex h-full flex-col p-6 hover:border-primary/30 hover:shadow-md shadow-sm">
                 <div className="mb-4 flex items-start gap-3">
-                  <ToolLogo name={tool.name} logoUrl={tool.logo_url} size={44} />
+                  <ToolLogo
+                    name={tool.name}
+                    logoUrl={tool.logo_url}
+                    size={44}
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
                       <h3 className="truncate text-base font-semibold text-foreground">
@@ -119,15 +123,6 @@ export function TrendingTools({ tools }: { tools: TrendingTool[] }) {
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[10%] bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-background to-transparent" />
       </div>
-
-      <div className="mt-12 text-center px-6">
-        <Button variant="outline" className="h-11 gap-2 rounded-full px-8 text-[14px] shadow-sm transition-transform hover:scale-105" asChild>
-          <Link href="/dashboard">
-            Explore Directory
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Button>
-      </div>
     </section>
-  )
+  );
 }

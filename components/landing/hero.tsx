@@ -37,11 +37,6 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
 
   return (
     <section className="relative overflow-hidden px-6 pt-24 pb-20 md:pt-32 md:pb-32">
-      <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center overflow-hidden">
-        <div className="absolute -top-[10%] left-[20%] h-125 w-125 rounded-full bg-primary/10 mix-blend-multiply blur-[120px] filter dark:bg-primary/20 dark:mix-blend-screen" />
-        <div className="absolute bottom-[10%] -right-[10%] h-150 w-150 rounded-full bg-primary/10 mix-blend-multiply blur-[120px] filter dark:bg-primary/20 dark:mix-blend-screen" />
-      </div>
-
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-8 lg:items-center">
           <div className="max-w-2xl">
@@ -60,7 +55,7 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
             </h1>
 
             <p
-              className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground text-pretty md:text-lg animate-in fade-in slide-in-from-bottom-2 duration-500"
+              className="mt-6 max-w-lg text-base leading-relaxed text-foreground/20 text-pretty md:text-lg animate-in fade-in slide-in-from-bottom-2 duration-500"
               style={{ animationDelay: "160ms", animationFillMode: "both" }}
             >
               Curated by role, validated by real professionals, and organized
@@ -71,7 +66,7 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
               className="mt-10 animate-in fade-in slide-in-from-bottom-2 duration-500"
               style={{ animationDelay: "240ms", animationFillMode: "both" }}
             >
-              <p className="mb-4 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="mb-4 text-[13px] font-semibold uppercase tracking-wider text-foreground">
                 Select your role to preview your stack
               </p>
               <div className="flex flex-wrap gap-2.5">
@@ -86,7 +81,7 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
                     className={`rounded-xl border px-5 py-2.5 text-[14px] font-medium transition-all duration-300 ${
                       selectedRole === role.slug
                         ? "border-primary bg-primary text-primary-foreground shadow-md scale-105"
-                        : "border-border/50 bg-card/50 text-muted-foreground backdrop-blur-sm hover:border-border hover:bg-card hover:text-foreground"
+                        : "border-border/50 bg-card/50 text-foreground backdrop-blur-sm hover:border-border hover:bg-card hover:text-foreground"
                     }`}
                   >
                     {role.label}
@@ -96,7 +91,7 @@ export function Hero({ roleStacks }: { roleStacks: RoleStack[] }) {
             </div>
 
             <div
-              className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-[13px] text-muted-foreground animate-in fade-in duration-500"
+              className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-[13px] text-foreground/40 animate-in fade-in duration-500"
               style={{ animationDelay: "400ms", animationFillMode: "both" }}
             >
               <span className="flex items-center gap-1.5">
